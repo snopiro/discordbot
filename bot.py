@@ -4,6 +4,7 @@ import os
 import threading
 import requests
 import random
+import youtube_dl
 from discord.ext import commands
 from gtts import gTTS
 
@@ -236,6 +237,36 @@ async def rule34(ctx, *args):
 
     except Exception as e:
         await ctx.send(f"Error: Invalid tags")
+
+@bot.command()
+async def youtubemp3(ctx, link):
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '320',
+        }],
+    }
+    await ctx.send(f"Processing...")
+
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(link, download=False)
+        title = info['title']
+        ydl.download([link])
+        filename = ydl.prepare_filename(info).replace(".webm", ".mp3")
+
+    try:
+        while not os.path.exists(filename):
+            await asyncio.sleep(1)  # Wait until the file finishes downloading
+
+        with open(filename, 'rb') as file:
+            await ctx.send(file=discord.File(file, filename=filename))
+        await ctx.send(f"Download complete: {title}")
+
+        os.remove(filename)  # Remove the local MP3 file
+    except Exception as e:
+        await ctx.send(f"Error during download: {e}")
 
 
 # Add more commands and event handlers as needed
