@@ -5,6 +5,7 @@ import threading
 import requests
 import random
 import youtube_dl
+import re
 from discord.ext import commands
 from gtts import gTTS
 
@@ -30,7 +31,7 @@ def text_to_speech(text, output_file):
 def cleanup_loose_files():
     # Clean up loose TTS files
     for filename in os.listdir():
-        if filename.startswith("tts_") and filename.endswith(".mp3"):
+        if filename.endswith(".mp3"):
             print("Removing " + filename)
             os.remove(filename)
 
@@ -254,7 +255,9 @@ async def youtubemp3(ctx, link):
         info = ydl.extract_info(link, download=False)
         title = info['title']
         ydl.download([link])
-        filename = ydl.prepare_filename(info).replace(".webm", ".mp3")
+        filename = ydl.prepare_filename(info)
+        filename = re.sub(r"\.(webm|m4a)$", ".mp3", filename)
+        print("Expected filename: " + filename)
 
     try:
         while not os.path.exists(filename):
