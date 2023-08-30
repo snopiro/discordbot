@@ -6,14 +6,18 @@ import requests
 import random
 import youtube_dl
 import re
+import json
 from discord.ext import commands
 from gtts import gTTS
 
 intents = discord.Intents.default()
 intents.message_content = True
 
+with open('config.json', 'r') as file:
+    config = json.load(file)
+    token = config["DISCORD_BOT_TOKEN"]
+
 bot = commands.Bot(command_prefix='$', intents=intents)
-token = "NjYwMjAxMjE0MzkwMzA0ODA4.GV1xpf.ES-JVJm3YBCA-DZ3bEtYci86EbdaCKIjnPUY-8"
 
 # Global variables
 running_threads = []
