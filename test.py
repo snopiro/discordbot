@@ -22,7 +22,7 @@
 
 
 from __future__ import unicode_literals
-import youtube_dl
+import yt_dlp
 print("Insert the link")
 link = input ("")
 
@@ -35,5 +35,5 @@ ydl_opts = {
     }],
 }
 
-with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+with yt_dlp.YoutubeDL(ydl_opts) as ydl:
     ydl.download([link])

@@ -4,7 +4,7 @@ import os
 import threading
 import requests
 import random
-import youtube_dl
+import yt_dlp
 import re
 import json
 from discord.ext import commands
@@ -255,7 +255,7 @@ async def youtubemp3(ctx, link):
     }
     await ctx.send(f"Processing...")
 
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(link, download=False)
         title = info['title']
         ydl.download([link])
